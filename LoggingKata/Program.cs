@@ -12,6 +12,7 @@ namespace LoggingKata
 
         static void Main(string[] args)
         {
+            
             // TODO:  Find the two Taco Bells that are the furthest from one another.
             // HINT:  You'll need two nested forloops ---------------------------
 
@@ -35,12 +36,33 @@ namespace LoggingKata
 
             // TODO: Create two `ITrackable` variables with initial values of `null`. These will be used to store your two taco bells that are the farthest from each other.
             // Create a `double` variable to store the distance
+            ITrackable tacobell1 = null;
+            ITrackable tacobell2= null;
+            double distance = 0;
 
             // Include the Geolocation toolbox, so you can compare locations: `using GeoCoordinatePortable;`
+            var geo = new GeoCoordinate();
 
             //HINT NESTED LOOPS SECTION---------------------
             // Do a loop for your locations to grab each location as the origin (perhaps: `locA`)
+            foreach (var location in locations)
+            {
+                var cord1 = new GeoCoordinate { Latitude = location.Location.Latitude, Longitude = location.Location.Longitude };
 
+                foreach (var endpoint in locations)
+                {
+                    var cord2 = new GeoCoordinate { Latitude = endpoint.Location.Latitude, Longitude = endpoint.Location.Longitude };
+
+                    var tacoDist = cord1.GetDistanceTo(cord2);
+
+                    if(tacoDist > distance)
+                    {
+                        distance = tacoDist;
+                        tacobell1 = location;
+                        tacobell2 = endpoint;
+                    }
+                }
+            }
             // Create a new corA Coordinate with your locA's lat and long
 
             // Now, do another loop on the locations with the scope of your first loop, so you can grab the "destination" location (perhaps: `locB`)
@@ -52,7 +74,7 @@ namespace LoggingKata
 
             // Once you've looped through everything, you've found the two Taco Bells farthest away from each other.
 
-
+            Console.WriteLine($"The farthest distance between to taco bells is {distance} and is between {tacobell1.Name} and {tacobell2.Name}");
             
         }
     }

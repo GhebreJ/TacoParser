@@ -1,4 +1,6 @@
-﻿namespace LoggingKata
+﻿using System;
+
+namespace LoggingKata
 {
     /// <summary>
     /// Parses a POI file to locate all the Taco Bells
@@ -14,17 +16,42 @@
             // Take your line and use line.Split(',') to split it up into an array of strings, separated by the char ','
             var cells = line.Split(',');
 
+            if(line == null) { logger.LogWarning("Input line is null, please check input data"); return null; }
+
             // If your array.Length is less than 3, something went wrong
             if (cells.Length < 3)
             {
                 // Log that and return null
+                logger.LogWarning("Array length is less than 3, please check input data");
                 // Do not fail if one record parsing fails, return null
-                return null; // TODO Implement
+                return null; 
+            }
+
+            if (cells.Length > 3)
+            {
+                // Log that and return null
+                logger.LogWarning("Array length is greater than 3, please check input data");
+                // Do not fail if one record parsing fails, return null
+                return null;
             }
 
             // grab the latitude from your array at index 0
             // grab the longitude from your array at index 1
             // grab the name from your array at index 2
+
+            double lat;
+            double lon;
+            try
+            {
+                lat = double.Parse(cells[0]);
+                lon = double.Parse(cells[1]);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Failed to parse lon or lat to double, please check input data");
+                return null;
+            }   
+            string name = cells[2];
 
             // Your going to need to parse your string as a `double`
             // which is similar to parsing a string as an `int`
@@ -32,13 +59,17 @@
             // You'll need to create a TacoBell class
             // that conforms to ITrackable
 
+            var tp = new TacoBell();
+
             // Then, you'll need an instance of the TacoBell class
             // With the name and point set correctly
-
+            tp.Name = name.Replace(".", "");
+            var point = new Point() { Latitude= lat, Longitude = lon };
+            tp.Location = point;
             // Then, return the instance of your TacoBell class
             // Since it conforms to ITrackable
 
-            return null;
+            return tp;
         }
     }
 }
